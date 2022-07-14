@@ -172,7 +172,8 @@ namespace Challenge_WirTrack.Controllers
         {
             using (WebClient client = new WebClient())
             {
-                string ApiID = "f81077568dac3512b6c107cc75b05b6d";
+                
+                string ApiID = "";
 
                 string Uri = "http://api.openweathermap.org/";
 
