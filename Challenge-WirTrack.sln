@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32505.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Challenge-WirTrack", "Challenge-WirTrack\Challenge-WirTrack.csproj", "{43036FAB-4C40-4EBF-9DBC-92C42E617791}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{43036FAB-4C40-4EBF-9DBC-92C42E617791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43036FAB-4C40-4EBF-9DBC-92C42E617791}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43036FAB-4C40-4EBF-9DBC-92C42E617791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43036FAB-4C40-4EBF-9DBC-92C42E617791}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D9E05799-B48B-4786-99E5-ECC265D5067A}
+	EndGlobalSection
+EndGlobal
