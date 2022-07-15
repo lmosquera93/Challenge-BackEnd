@@ -38,7 +38,7 @@ namespace Challenge_WirTrack.Controllers
                 };
                 //Busca si ese vehiculo tiene un vieaje programado ese dia. Solo se puede hacer un viaje por dia.
                 
-                var search = await _context.Travels.FirstOrDefaultAsync(x => x.Date == dto.Date && x.VehicleID == dto.VehicleID);
+                var search = await _context.Travels.FirstOrDefaultAsync(x => x.Date == dto.Date && x.VehicleID == dto.VehicleID && x.IsDeleted == false);
 
                 
                 if (search == null)
