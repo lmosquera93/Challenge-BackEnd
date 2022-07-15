@@ -104,7 +104,7 @@ namespace Challenge_WirTrack.Controllers
         {
             try
             {
-                var findcity = await _context.Cities.Where(x => x.Id == Id).FirstOrDefaultAsync();
+                var findcity = await _context.Cities.Where(x => x.Id == Id && x.IsDeleted == false).FirstOrDefaultAsync();
 
                 if (findcity == null)
                 {
@@ -112,10 +112,10 @@ namespace Challenge_WirTrack.Controllers
                 }
                 else
                 {
-                    //When modify City automatically update LastModify and if it is deleted then is back on "False".
+                    
                     findcity.LastModified = DateTime.Now;
                     findcity.Name = dto.Name;
-                    findcity.IsDeleted = false;
+
 
                     _context.Cities.Update(findcity);
 

@@ -37,16 +37,33 @@ namespace Challenge_WirTrack.Controllers
                     VehicleID = dto.VehicleID
                 };
                 //Busca si ese vehiculo tiene un vieaje programado ese dia. Solo se puede hacer un viaje por dia.
+                
                 var search = await _context.Travels.FirstOrDefaultAsync(x => x.Date == dto.Date && x.VehicleID == dto.VehicleID);
 
-                // esta lloviendo hoy? 
+                
                 if (search == null)
                 {
-                    _context.Travels.Add(newTravel);
+                    var searchCity = await _context.Cities.FindAsync(dto.CityID);
 
-                    await _context.SaveChangesAsync();
+                    if(searchCity.Name == "Buenos Aires" || searchCity.Name == "London" || searchCity.Name == "La Plata") {
 
-                    return Ok(new { message = "Travel Created!" });
+                        bool boolean = getWeather(searchCity.Name, dto.Date);
+
+                        if (boolean == true)
+                        {
+                            return BadRequest(new { message = "Esta lloviendo." });
+                        }
+                        _context.Travels.Add(newTravel);
+
+                        await _context.SaveChangesAsync();
+
+                        return Ok(new { message = "Travel Created!" });
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "Solo se puede viajar a London, Buenos Aires o La Plata." });
+                    }
+
                 }
 
                 return BadRequest(new { message = "Ya tiene un viaje Programado este dia." });
@@ -63,10 +80,6 @@ namespace Challenge_WirTrack.Controllers
         {
             try
             {
-                //string strin = "La Plata";
-                //string dateTime = "2022 - 07 - 14 06:00:00";
-                //getWeather(strin, dateTime);
-
                 var listTravels = await _context.Travels.Include(x => x.City).Include(x => x.Vehicle).Where(x => x.IsDeleted == false).ToListAsync();
 
                 List<TravelDto> traveldto = new();
@@ -139,7 +152,7 @@ namespace Challenge_WirTrack.Controllers
         {
             try
             {
-                var findTravel = await _context.Travels.Where(x => x.Id == Id).FirstOrDefaultAsync();
+                var findTravel = await _context.Travels.Where(x => x.Id == Id && x.IsDeleted == false).FirstOrDefaultAsync();
 
                 if (findTravel == null)
                 {
@@ -147,13 +160,12 @@ namespace Challenge_WirTrack.Controllers
                 }
                 else
                 {
-                    //When modify City automatically update LastModify and if it is deleted then is back on "False".
+                    //When modify City automatically update LastModify 
                     findTravel.LastModified = DateTime.Now;
                     findTravel.Date = dto.Date;
                     findTravel.VehicleID = dto.VehicleID;
                     findTravel.CityID = dto.CityID;
-                    findTravel.IsDeleted = false;
-
+                    
                     _context.Travels.Update(findTravel);
 
                     await _context.SaveChangesAsync();
@@ -167,35 +179,87 @@ namespace Challenge_WirTrack.Controllers
             }
         }
 
-        //Only 4 days brings
-        public bool getWeather(string City, string Date)
+        public bool getWeather(string City , DateTime Date)
         {
             using (WebClient client = new WebClient())
             {
                 
-                string ApiID = "";
-
+                string ApiID = "f81077568dac3512b6c107cc75b05b6d";
                 string Uri = "http://api.openweathermap.org/";
+                string URLCity = Uri+$"data/2.5/forecast?q={City}&appid={ApiID}";
+                string URL = "";
 
-                string completeURL = Uri+$"data/2.5/forecast?q={City}&appid={ApiID}";
-
-
-                string json = client.DownloadString(completeURL);
-
-                WeatherInfoDto.list Info = JsonConvert.DeserializeObject<WeatherInfoDto.list>(json);
-
-                foreach(WeatherInfoDto.Weather weatherInfo in Info.weather)
+                switch (City)
                 {
-                    if (Date.Equals(Info.dt_txt) && weatherInfo.main == "Clouds")
-                    {
-                        return true;
-                    }
+                    case "Buenos Aires":
+                        URL = Uri + $"data/2.5/onecall?lat=-34.6132&lon=-58.3772&exclude=current,hourly,minutely,alerts&units=metric&appid={ApiID}";
+                        break;
+                    case "La Plata":
+                        URL = Uri + $"data/2.5/onecall?lat=-34.9215&lon=-57.9545&exclude=current,hourly,minutely,alerts&units=metric&appid={ApiID}";
+                        break;
+                    case "London":
+                        URL = Uri + $"data/2.5/onecall?lat=-51.5085&lon=-0.1257&exclude=current,hourly,minutely,alerts&units=metric&appid={ApiID}";
+                        break;
 
+                }
+
+
+                var json = client.DownloadString(URL);
+
+                var data = JsonConvert.DeserializeObject<WeatherInfoDto.root>(json);
+
+                //var list = data.daily;
+
+                int day = Date.Day;
+
+                int daycompare = DateTime.Today.Day;
+
+                var list = data.daily[0];
+
+                switch (day - daycompare)
+                {
+                    //Today
+                    case 0:
+                        list = data.daily[0];
+                        break;
+                      
+                    //Today+1
+                    case 1:
+                        list = data.daily[1];
+                        break;
+                    //Today+2
+                    case 2:
+                        list = data.daily[2];
+                        break;
+                    //Today+3
+                    case 3:
+                        list = data.daily[3];
+                        break;
+                    //Today+4
+                    case 4:
+                        list = data.daily[4];
+                        break;
+                    //Today+5
+                    case 5:
+                        list = data.daily[5];
+                        break; 
+                    //Today+6
+                    case 6:
+                        list = data.daily[6];
+                        break;
+                }
+
+                if (list.weather[0].main == "Rain")
+                {
+                    return true;
                 }
                 return false;
 
+                      
+
             }
         }
+
 
     }
 }

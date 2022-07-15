@@ -103,7 +103,7 @@ namespace Challenge_WirTrack.Controllers
 
             try
             {
-                var findVehicle = await _context.Vehicles.Where(x => x.Id == Id).FirstOrDefaultAsync();
+                var findVehicle = await _context.Vehicles.Where(x => x.Id == Id && x.IsDeleted == false).FirstOrDefaultAsync();
 
                 if (findVehicle == null)
                 {
@@ -111,12 +111,11 @@ namespace Challenge_WirTrack.Controllers
                 }
                 else
                 {
-                    //When modify Vehicle automatically update LastModify and if it is deleted then is back on "False".
+                    
                     findVehicle.LastModified = DateTime.Now;
                     findVehicle.Type = dto.Type;
                     findVehicle.Brand = dto.Brand;
                     findVehicle.Patent = dto.Patent;
-                    findVehicle.IsDeleted = false;
 
                     _context.Vehicles.Update(findVehicle);
 

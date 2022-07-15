@@ -29,6 +29,10 @@ namespace Challenge_WirTrack
         {
             services.AddControllersWithViews();
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
+            });
             //services.AddControllers().AddJsonOptions(x =>
             //    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddDbContext<WirtrackDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionString")));
@@ -46,6 +50,9 @@ namespace Challenge_WirTrack
                 app.UseDeveloperExceptionPage();
 
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
+
             app.UseCors("AllowWebApp");
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -20,7 +20,7 @@ namespace Challenge_WirTrack.DataAccess
                 {
                     Id = 2,
                     IsDeleted = false,
-                    Name = @"Mar del Plata",
+                    Name = @"London",
                     LastModified = DateTime.Now
                 },
                 new City

@@ -5,17 +5,23 @@ namespace Challenge_WirTrack.Models.Dtos
 {
     public class WeatherInfoDto
     {
-        public class Weather
-        {
-            public int id { get; set; }
-            public string main { get; set; }
-            public string description { get; set; }
-        }
 
-        public class list
+        public class daily
         {
             public List<Weather> weather { get; set; }
-            public string dt_txt { get; set; }
+
         }
+
+        public class Weather
+        {
+            public string main { get; set; }
+        }
+
+        public class root
+        {
+            public List<Weather> weather { get; set; }
+            public List<daily> daily { get; set; }
+        }
+
     }
 }
